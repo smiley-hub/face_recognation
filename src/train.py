@@ -36,7 +36,7 @@ def set_seed(seed: int) -> None:
 # -------------------------------------
 # YOUR TASK
 # -------------------------------------
-def train_one_epoch(
+def train_one_epoch(model:nn.Module, loader:DataLoader, criterion:nn.CrossEntropyLoss, optimizer:torch.optim.Optimizer, device:torch.device
 ) -> tuple[float, float]:
     """
     Run one full training pass over the DataLoader.
@@ -64,8 +64,34 @@ def train_one_epoch(
         avg_loss (float): mean cross-entropy loss across all samples.
         accuracy (float): fraction of correctly classified samples.
         """
-    
-    raise NotImplementedError("Implement train_one_epoch() in src/train.py")
+    model.train()
+
+    total_loss = 0.0
+    correct = 0
+    total = 0
+
+    for images, labels in loader:
+        images = images.to(device)
+        labels = labels.to(device)
+
+        optimizer.zero_grad()
+
+        logits = model(images) 
+        loss = criterion(logits, labels)
+
+        loss.backward()
+        optimizer.step()
+
+        batch_size = len(labels)
+        total_loss += loss.item() * batch_size
+        correct += (logits.argmax(dim=1) == labels).sum().item()
+        total += batch_size
+
+    avg_loss = total_loss / total
+    accuracy = correct / total
+
+    return avg_loss, accuracy
+
 
 
 # -------------------------------------
