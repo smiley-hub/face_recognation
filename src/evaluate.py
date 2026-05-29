@@ -51,7 +51,7 @@ def predict_all(
 # -------------------------------------
 # YOUR TASK
 # -------------------------------------
-def compute_metrics(   
+def compute_metrics(preds: torch.Tensor, labels: torch.Tensor 
 ) -> dict:
     """
     Compute binary classification metrics treating label 1 (YOU) as positive.
@@ -74,8 +74,34 @@ def compute_metrics(
         FN: predicted NOT YOU, truly YOU
         TN: predicted NOT YOU, truly NOT YOU
     """
-    
-    raise NotImplementedError("Implement compute_metrics() in src/evaluate.py")
+    TP = FP = FN = TN = 0
+    correct = 0
+    total = len(labels)
+
+    for pred, label in zip(preds, labels):
+        if pred == 1 and label == 1:
+            TP += 1
+            correct += 1
+        elif pred == 1 and label == 0:
+            FP += 1
+        elif pred == 0 and label == 1:
+            FN += 1
+        else:
+            TN += 1
+            correct += 1
+
+    accuracy = correct / total if total > 0 else 0.0
+    precision = TP / (TP + FP) if (TP + FP) > 0 else 0.0
+    recall = TP / (TP + FN) if (TP + FN) > 0 else 0.0
+    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
+
+    return {
+        "accuracy": accuracy,
+        "precision": precision,
+        "recall": recall,
+        "f1": f1,
+    }
+
 
 
 # -------------------------------------
