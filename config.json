@@ -1,0 +1,21 @@
+{
+  "training": {
+    "batch_size": 16,
+    "epochs": 20,
+    "learning_rate": 0.001,
+    "seed": 42,
+    "patience": 7
+  },
+  "model": {
+    "backbone": "resnet18",
+    "pretrained": true,
+    "num_classes": 2
+  },
+  "data": {
+    "image_size": 224,
+    "positive_dir": "data/positive",
+    "negative_dir": "data/negative",
+    "checkpoint_dir": "checkpoints",
+    "log_dir": "logs"
+  }
+}
