@@ -61,7 +61,7 @@ def get_inference_transform(image_size: int = 224):
 # -------------------------------------
 # YOUR TASK 1
 # -------------------------------------
-def predict(
+def predict(image, model:nn.Module, device:torch.device, image_size=224
 ) -> dict:
     """
     Run inference on a single PIL image.
@@ -83,7 +83,18 @@ def predict(
     Returns:
         dict with keys "NOT YOU" and "YOU" mapping to float probabilities.
         """
+    
+    transform = get_inference_transform(image_size)  #this will convert the image to a tensor and normalize it  example [3, 224, 224]
+    image = transform(image).unsqueeze(0)# I add a batch dimension to the image tensor so it becomes [1, 3, 224, 224] and move it to the same device as the model
+    image = image.to(device)
 
+    with torch.no_grad():
+        logits = model(image) #model logits outputs 2 class scores of the input image 
+        probs = torch.softmax(logits, dim=1) #softmax is applied to convert the logits into probabilities for each class.
+        return {
+            "NOT YOU": probs[0, 0].item(),
+            "YOU": probs[0, 1].item(),
+        }
     raise NotImplementedError("Implement predict() in src/app.py")
 
 
@@ -108,6 +119,27 @@ def build_app(config_path: str = "../config.json"):
           • title    = "Personal Face Authentication"
           • description = a short description of what the app does
     """
+
+    import gradio as gr 
+    
+    with open (config_path)as f:# load the config file to get the image size 
+        cfg = json.load(f)
+    image_size = cfg["data"]["image_size"]
+
+    
+    model, device = load_model(config_path) #load the trained model and the  device it is on (cpu ot cuda)
+
+    def inference_fn(image_array):
+        image = Image.fromarray(image_array).convert("RGB") #convert the input image array to a PIL image in RGB format
+        return predict(image, model, device, image_size) #call the predict function to get the probabilities for "NOT YOU" and "YOU"
+    
+    return gr.Interface(
+        fn = inference_fn,
+        inputs = gr.Image(label="Upload your face"),
+        outputs = gr.Label(num_top_classes=2, label="Prediction"),
+        title = "Personal Face Authentication",
+        description = "Upload a face image and the model will predict whether it is YOU or NOT YOU."
+            )
 
     raise NotImplementedError("Implement build_app() in src/app.py")
 
