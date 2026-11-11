@@ -1,8 +1,8 @@
-# CNG403 Assignment 2: Personal Face Authentication
+Personal Face Authentication
 
 ## Overview
 
-This assignment guides you through fine-tuning a **pretrained CNN** to solve a real binary classification problem: given a face image, determine whether it belongs to **YOU** or **NOT YOU**.
+This will guide you through fine-tuning a **pretrained CNN** to solve a real binary classification problem: given a face image, determine whether it belongs to **YOU** or **NOT YOU**.
 
 **Key Learning Objectives:**
 - Understand transfer learning and feature reuse from pretrained models
@@ -47,19 +47,6 @@ assignment2/
 
 ---
 
-## Your Tasks: What to Implement
-
-| File | Function | Points | Sanity Check |
-|------|----------|--------|--------------|
-| [src/model.py] | `build_model()` | 20 pts | `python src/model.py` |
-| [src/train.py] | `train_one_epoch()` | 25 pts | Training must converge |
-| [src/evaluate.py] | `compute_metrics()` | 15 pts | `python src/evaluate.py` |
-| [src/app.py] | `predict()` + `build_app()` | 20 pts | 5 screenshots required |
-| Questions (Q1–Q4) | Written answers in notebook | 20 pts | — |
-| **Total** | | **100 pts** | |
-
----
-
 ## Getting Started
 
 ### Step 1: Install dependencies
@@ -99,10 +86,4 @@ Negative class is fixed for all students: Serena Williams, Angelina Jolie, Aleja
 
 ---
 
-## Submission
 
-Submit a `.zip` excluding `data/` and `checkpoints/`, plus a `screenshots/` folder with 5 Gradio prediction screenshots.
-
-**⚠️ Including test images in train/ or val/ = zero grade.**
-
-Good luck!
